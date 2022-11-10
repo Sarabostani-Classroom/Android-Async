@@ -1,4 +1,4 @@
-package com.example.parallelism;
+package com.example.asynctasks;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -21,6 +21,8 @@ import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.asynctasks.LoginDialog;
 
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
         tv = findViewById(R.id.progress_text);
         downloadBtn = findViewById(R.id.download_btn);
         random = new Random();
+
+        downloadBtn.setOnClickListener(v -> basicCall(v));
 
         //Executor service
         executorService = Executors.newSingleThreadExecutor();
@@ -113,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
             }
         };
 
-        handler.post(() -> doFakeWork());
+        handler.post(this::doFakeWork);
 
         // Handler.handleMessage() will be executed on the created thread
         // after the previous Runnable is finished

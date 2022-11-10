@@ -1,4 +1,4 @@
-package com.example.parallelism;
+package com.example.asynctasks;
 
 import android.app.AlertDialog;
 import android.app.Dialog;

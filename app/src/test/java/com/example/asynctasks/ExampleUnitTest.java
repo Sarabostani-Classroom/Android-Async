@@ -1,4 +1,4 @@
-package com.example.parallelism;
+package com.example.asynctasks;
 
 import org.junit.Test;
 
