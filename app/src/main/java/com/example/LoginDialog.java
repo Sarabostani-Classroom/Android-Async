@@ -1,4 +1,4 @@
-package com.example.asynctasks;
+package com.example;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -20,6 +20,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.DialogFragment;
 
+import com.example.asynctasks.R;
+
 import java.util.Base64;
 
 public class LoginDialog extends DialogFragment {
@@ -28,7 +30,7 @@ public class LoginDialog extends DialogFragment {
 
     LoginDialogListener listener;
 
-    public static interface LoginDialogListener {
+    public interface LoginDialogListener {
         void storeToken(String token);
     }
 
@@ -43,15 +45,15 @@ public class LoginDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         LayoutInflater inflater = requireActivity().getLayoutInflater();
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Login");
+        AlertDialog.Builder dialogBox = new AlertDialog.Builder(getActivity());
+        dialogBox.setTitle("Login");
         View dialogView = inflater.inflate(R.layout.login_dialog, null);
-        builder.setView(dialogView);
+        dialogBox.setView(dialogView);
 
         this.userName = dialogView.findViewById(R.id.username_input);
         this.password = dialogView.findViewById(R.id.password_input);
 
-        builder.setPositiveButton("Submit", (dialog, which) -> {
+        dialogBox.setPositiveButton("Submit", (dialog, which) -> {
             Log.i("INFO", "Positive pressed");
             String username = this.userName.getText().toString();
             String pwd = this.password.getText().toString();
@@ -62,10 +64,10 @@ public class LoginDialog extends DialogFragment {
             Log.i("INFO", "Token in dialog: " + base64);
             listener.storeToken(base64);
         });
-        builder.setNegativeButton("Cancel", (dialog, which) -> {
+        dialogBox.setNegativeButton("Cancel", (dialog, which) -> {
             Log.i("INFO", "Negative pressed");
         });
 
-        return builder.create();
+        return dialogBox.create();
     }
 }

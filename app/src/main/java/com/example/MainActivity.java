@@ -1,4 +1,4 @@
-package com.example.asynctasks;
+package com.example;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -13,19 +13,18 @@ import android.os.SystemClock;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.asynctasks.LoginDialog;
+import com.example.LoginDialog;
+import com.example.asynctasks.R;
 
 import java.util.Random;
-import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -50,23 +49,29 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
         tv = findViewById(R.id.progress_text);
         downloadBtn = findViewById(R.id.download_btn);
         random = new Random();
-
-        downloadBtn.setOnClickListener(v -> basicCall(v));
+        downloadBtn.setOnClickListener(v -> useExecutorService(v));
 
         //Executor service
         executorService = Executors.newSingleThreadExecutor();
 
         datePicker = new DatePickerDialog(this);
+        findViewById(R.id.date_btn).setOnClickListener(v -> datePicker.show());
+
         datePicker.setOnDateSetListener((view, year, month, dayOfMonth) -> Toast.makeText(
                 getApplicationContext(),
                 String.format("%02d/%02d/%d", month, dayOfMonth, year), Toast.LENGTH_LONG).show());
+
 
         timePicker = new TimePickerDialog(this, (view, hourOfDay, minute) -> Toast.makeText(
                 getApplicationContext(),
                 String.format("%02d:%02d", hourOfDay, minute), Toast.LENGTH_LONG).show(), 0, 0, false);
 
+        findViewById(R.id.time_btn).setOnClickListener(v -> timePicker.show());
+
         loginDialog = new LoginDialog();
         loginDialog.setCancelable(false);
+
+        findViewById(R.id.open_login_btn).setOnClickListener(v -> showDialog(v));
     }
 
     public void basicCall(View view) {
@@ -75,20 +80,7 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
 
     public void useThread(View view) {
         // Spawn a new thread
-        new Thread(() -> {
-            doFakeWork();
-        }).start();
-    }
-
-    /*
-    Dialogs
-     */
-    public void pickDate(View view) {
-        datePicker.show();
-    }
-
-    public void pickTime(View view) {
-        timePicker.show();
+        new Thread(() -> doFakeWork()).start();
     }
 
     // Shows the custom dialog
@@ -126,7 +118,7 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
 
     public void useExecutorService(View view) {
 
-        Log.i("INFO","Creating a Runnable...");
+        /*Log.i("INFO","Creating a Runnable...");
         Runnable runnable = () -> {
             String threadName = Thread.currentThread().getName();
             long currentMillis = System.currentTimeMillis();
@@ -135,8 +127,8 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
             Log.i("INFO",String.format("Thread %s is done after %d milli seconds!", threadName, System.currentTimeMillis() - currentMillis));
         };
 
-        Log.i("INFO","Submit the task specified by the runnable to the executor service.");
-        executorService.submit(runnable);
+        Log.i("INFO","Submit the task specified by the runnable to the executor service.");*/
+        executorService.submit(() -> doFakeWork());
     }
 
 
@@ -146,7 +138,7 @@ public class MainActivity extends AppCompatActivity implements LoginDialog.Login
     }
 
     /*
-    USING ASYNCTASK -- THANKFULLY DEPRECATED/DISCOURAGED
+    USING ASYNCTASK -- THANKFULLY DEPRECATED
      */
 
     public void useAsyncTask(View view) {
